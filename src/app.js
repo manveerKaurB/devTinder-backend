@@ -4,6 +4,87 @@ app.listen(3000, ()=> {
     console.log("Server is successfully running on port 3000");
 });
 
+// app.use("/userDetails", (req, res) => {
+//    console.log("route handler 1");
+//     res.send("respone from route handler 1");
+// }, (req, res) => {
+//     console.log("route handler 2");
+//     res.send("respone from route handler 2");
+// });
+
+app.use("/userDetails0", (req, res) => {
+    console.log("route handler 1");
+    // res.send("respone from route handler 1");
+ }, (req, res) => {
+     console.log("route handler 2");
+     res.send("respone from route handler 2");
+ });
+
+ app.use("/userDetails", (req, res, next) => {
+    console.log("route handler 1");
+    // res.send("respone from route handler 1");
+    next();
+ }, (req, res) => {
+     console.log("route handler 2");
+     res.send("respone from route handler 2");
+ });
+
+ app.use("/userDetails1", (req, res, next) => {
+    console.log("route handler 1");
+    res.send("respone from route handler 1");
+    next();
+ }, (req, res) => {
+     console.log("route handler 2");
+     res.send("respone from route handler 2");
+ });
+
+ app.use("/userDetails2", (req, res, next) => {
+    console.log("route handler 1");
+    next();
+    res.send("respone from route handler 1");
+ }, (req, res) => {
+     console.log("route handler 2");
+     res.send("respone from route handler 2");
+ });
+
+
+ app.use("/userDetails3", (req, res, next) => {
+    console.log("route handler 1");
+    next();
+ });
+
+ app.use("/userDetails4", (req, res, next) => {
+    console.log("route handler 1");
+ });
+
+
+ app.use("/userDetails5", [(req, res, next) => {
+    console.log("route handler 1");
+    next();
+    res.send("respone from route handler 1");
+ }, (req, res) => {
+     console.log("route handler 2");
+     res.send("respone from route handler 2");
+ }]);
+
+ app.use("/userDetails6", [(req, res, next) => {
+    console.log("route handler 1");
+    next();
+    res.send("respone from route handler 1");
+ }], (req, res) => {
+     console.log("route handler 2");
+     res.send("respone from route handler 2");
+ });
+
+ app.use("/userDetails7", (req, res, next) => {
+    console.log("route handler 1");
+    next();
+ });
+ app.use("/userDetails7", (req, res, next) => {
+    console.log("route handler 2");
+    res.send("respone from route handler 2");
+ });
+
 app.get("/user/:userID/:password", (req,res) => {
     console.log(req.params)
     res.send(`hello from user, userId ${req.params.userID}, password ${req.params.password}`);
