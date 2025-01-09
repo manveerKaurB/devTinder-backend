@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const { adminAuth, userAuth } = require("./middlewares/auth");
 app.listen(3000, ()=> {
     console.log("Server is successfully running on port 3000");
 });
@@ -128,3 +129,30 @@ app.use("/test", (req,res) => {
 // app.use((req,res) => {
 //     res.send("hello from the server!");
 // });
+
+
+// middleware for authorization
+
+// app.use("/admin", (req, res, next) => {
+//     const token = "jhsbfhasbfhdsan";
+//     const isAuthorized = token === 'xyz';
+//     if(!isAuthorized){
+//         res.status(401).send("Unauthorized user");
+//     }
+//     else{
+//         next();
+//     }
+//  });
+
+// creating middleware function in another file and using it (AdminAuth)
+app.use("/admin", adminAuth);
+ app.get("/admin/getAllUsers", (req, res) => {
+    res.send("all users send successfully");
+ });
+ app.get("/admin/deleteUsers", (req, res) => {
+    res.send("deleted users successfully");
+ });
+
+ app.get("/user1", userAuth, (req,res) => {
+    res.send("user1 send successfully");
+ })
