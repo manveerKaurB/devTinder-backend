@@ -156,3 +156,24 @@ app.use("/admin", adminAuth);
  app.get("/user1", userAuth, (req,res) => {
     res.send("user1 send successfully");
  })
+
+ // error handling 1
+ app.get("/getUserData", (req,res) => {
+    try {
+        throw new Error("invalid user");
+        res.send("user data send");
+    } catch (error) {
+        res.status(500).send("Invalid User");
+    }
+ })
+
+ // error handling 2 , in wildcard route i.e. "/"
+ app.get("/getUserData1", (req, res, next) => {
+    throw new Error("invalid user");
+ })
+
+ app.use("/", (err, req, res, next) => {
+        if(err) {
+            res.status(500).send("Something went wrong");
+        }
+ });
