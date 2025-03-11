@@ -70,10 +70,10 @@ app.delete("/user", async (req, res) => {
 app.patch("/user", async (req, res) => {
     try {
         const userId = req.body.userId;
-        await User.findByIdAndUpdate(userId, req.body, {new: true});
+        await User.findByIdAndUpdate(userId, req.body, {runValidators: true});
         res.send("User updated successfully");
     } catch(err) {
-        res.status(400).send("something went wrong");
+        res.status(400).send("Update failed" + err.message);
     }
 })
 // update data of user by emailId
@@ -82,7 +82,7 @@ app.patch("/userByEmail", async (req, res) => {
         await User.findOneAndUpdate({emailId: req.body.emailId}, req.body);
         res.send("User updated successfully");
     } catch(err) {
-        res.status(400).send("something went wrong");
+        res.status(400).send("Update failed" + err.message);
     }
 })
 
