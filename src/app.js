@@ -4,7 +4,10 @@ const app = express();
 const User = require("./models/user");
 const { validateSignUpData } = require("./utils/Validation");
 const bcrypt = require("bcrypt");
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
 app.use(express.json());
+app.use(cookieParser());
 app.post("/signup", async (req, res) => {
     try {
         // validation of data
@@ -30,6 +33,8 @@ app.post("/login", async (req, res) => {
         }
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if(isPasswordValid){
+            const token = await jwt.sign({_id: user._id}, "Dev@Tinder67#");
+            res.cookie("token", token);
             res.send("User logged in successfully");
         }
         else {
@@ -37,6 +42,24 @@ app.post("/login", async (req, res) => {
         }
 
     } catch(err) {
+        res.status(400).send("Error: " + err.message);
+    }
+})
+
+app.get("/profile", async (req, res) => {
+    try {
+        const {token} = req.cookies;
+        if(!token) {
+            throw new Error("No token found");
+        }
+        const decodedMessage = await jwt.verify(token, "Dev@Tinder67#");
+        const user = await User.findById(decodedMessage._id);
+        if(!user) {
+            throw new Error("User does not exist");
+        }
+        res.send(user);
+    }
+    catch(err) {
         res.status(400).send("Error: " + err.message);
     }
 })
@@ -68,7 +91,6 @@ app.get("/user", async (req, res) => {
 app.get("/feed", async (req, res) => {
     try {
         const user = await User.find();
-        console.log(user);
         if(user.length === 0) {
             res.status(404).send("User not found");
         }
