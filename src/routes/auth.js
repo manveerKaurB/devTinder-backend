@@ -1,7 +1,7 @@
 const express = require("express");
-const { validateSignUpData } = require("../src/utils/Validation");
+const { validateSignUpData } = require("../utils/Validation");
 const bcrypt = require("bcrypt");
-const User = require("../src/models/user");
+const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const authRouter = express.Router();
 
@@ -39,6 +39,18 @@ authRouter.post("/login", async (req, res) => {
         }
 
     } catch(err) {
+        res.status(400).send("Error: " + err.message);
+    }
+})
+
+authRouter.post("/logout", async (req, res) => {
+    try {
+        // res.clearCookie("token");
+        // res.clearCookie("token").send(); chaining
+        res.cookie("token", null, {expires: new Date(Date.now())});
+        res.send("user logged out successfully");
+    }
+    catch(err) {
         res.status(400).send("Error: " + err.message);
     }
 })

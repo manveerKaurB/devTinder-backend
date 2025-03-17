@@ -1,6 +1,6 @@
 const validator = require("validator");
+const bcrypt = require("bcrypt");
 const validateSignUpData = (req) => {
-    console.log(req.body);
     const { firstName, lastName, emailId, password } = req.body;
     if(!firstName || !lastName) {
         throw new Error("Name is not valid");
@@ -12,9 +12,30 @@ const validateSignUpData = (req) => {
         throw new Error("emailId is not valid");
     }
     else if(!validator.isStrongPassword(password)) {
-        console.log(password);
         throw new Error("Please enter a strong Password");
     }
 }
 
-module.exports = {validateSignUpData};
+const validateEditProfile = (req) => {
+    const allowedEditFields = ["firstName", "lastName", "emailId", "photoUrl", "age", "gender", "about", "skills"];
+    const isEditAllowed = Object.keys(req.body).every((field)=> allowedEditFields.includes(field));
+
+    return isEditAllowed;
+}
+
+const validateEditPasswordProfile = async (req) => {
+    const allowedEditFields = ["password", "newPassword"];
+    const isEditAllowed = Object.keys(req.body).every((field)=> allowedEditFields.includes(field));
+    const passwordHash = req.user.password;
+    const passwordInputbyUser = req.body.password;
+    const isPasswordValid = await bcrypt.compare(passwordInputbyUser, passwordHash);
+    if(!isPasswordValid) {
+       return false;
+    }
+    else if(!validator.isStrongPassword(req.body.newPassword)) {
+        return false;
+    }
+    return isEditAllowed;
+}
+
+module.exports = {validateSignUpData, validateEditProfile, validateEditPasswordProfile};
