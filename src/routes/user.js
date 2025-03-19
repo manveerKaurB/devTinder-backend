@@ -59,6 +59,10 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
 userRouter.get("/user/feed", userAuth, async (req, res) => {
     try {
         const loggedInUser = req.user;
+        const page = parseInt(req.query.page) || 1; // where page is pageNumber
+        let limit = parseInt(req.query.limit) || 10; // where limit is page size
+        limit = limit > 50 ? 50 : limit; // limit to 50 , if user enters limit more that that then set it to 50
+        const skip = (page - 1) * limit;
         // avoid certains cards - his own card, card of his conenction where status is interested, ignored, accepted
         // i.e. user sees all cards except:
         // 0. his own card
@@ -86,7 +90,7 @@ userRouter.get("/user/feed", userAuth, async (req, res) => {
                {_id: { $nin: Array.from(hideUsersFromFeed) }},
                { _id: { $ne: loggedInUser._id } }
             ] 
-        }).select(USER_SAFE_DATA);
+        }).select(USER_SAFE_DATA).skip(skip).limit(limit);
         // select is used to send only specific fields instead of whole object
         res.send(usersFeed);
     }
