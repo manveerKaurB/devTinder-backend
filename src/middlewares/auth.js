@@ -4,7 +4,7 @@ const userAuth = async (req, res, next) => {
     try {
         const {token} = req.cookies;
         if(!token) {
-            throw new Error("No token found");
+            return res.status(401).json({error: "Please authenticate"});
         }
         const decodedMessage = await jwt.verify(token, "Dev@Tinder67#");
         const user = await User.findById(decodedMessage._id);
