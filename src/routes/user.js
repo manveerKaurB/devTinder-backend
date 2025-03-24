@@ -17,7 +17,7 @@ userRouter.get("/user/requests/received", userAuth, async (req, res) => {
         if(!pendingRequests) {
             return res.status(404).json({ message: "No pending requests found" });
         }
-        res.status(200).json({message: "connections received successfully" , pendingRequests});
+        res.status(200).json({message: "connections received successfully" , data: pendingRequests});
     }
     catch(err) {
         return res.status(400).json({msg: "Error" + err.message});
