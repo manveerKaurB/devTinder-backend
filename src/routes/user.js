@@ -92,7 +92,10 @@ userRouter.get("/user/feed", userAuth, async (req, res) => {
             ] 
         }).select(USER_SAFE_DATA).skip(skip).limit(limit);
         // select is used to send only specific fields instead of whole object
-        res.send(usersFeed);
+        res.send({
+            message: "User feed fetcheed successfully",
+            data: usersFeed
+        });
     }
     catch(err) {
         return res.status(400).json({message: "Error fetching users" + err.message});
