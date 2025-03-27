@@ -44,6 +44,16 @@ const userSchema = mongoose.Schema({
             message: `{VALUE} is incorrect gender type`
          }
     },
+    isPremium: {
+        type: Boolean,
+        default: false
+    },
+    membershipType: {
+        type: String,
+    },
+    membershipValidity: {
+        type: String
+    },
     photoUrl: {
         type: String,
         default: "https://geographyandyou.com/images/user-profile.png",
