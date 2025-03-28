@@ -3,6 +3,7 @@ const { connectDB } = require("./config/database");
 const app = express();
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const http = require('http');
 require("dotenv").config();
 require("./utils/cronjob");
 
@@ -18,17 +19,23 @@ const profileRouter = require("./routes/profile");
 const requestRouter = require("./routes/request");
 const userRouter = require("./routes/user");
 const paymentRouter = require("./routes/payment");
-
+const initializeSocket = require("./utils/socket");
 app.use("/", authRouter);
 app.use("/", profileRouter);
 app.use("/", requestRouter);
 app.use("/", userRouter);
 app.use("/", paymentRouter);
 
+// config needed for socket
+const server = http.createServer(app);
+
+// initialize websocket
+initializeSocket(server);
+
 connectDB()
 .then(() => {
     console.log("Database connection established ....");
-    app.listen(process.env.PORT, ()=> {
+    server.listen(process.env.PORT, ()=> {
         console.log(`Server is successfully running on port ${process.env.PORT}`);
     });
 })
